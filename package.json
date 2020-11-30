@@ -1,0 +1,36 @@
+{
+  "name": "sarot-node",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/dev",
+    "mulai": "echo 123"
+  },
+  "dependencies": {
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.9.0",
+    "@babel/node": "^7.8.7",
+    "@babel/plugin-proposal-class-properties": "^7.8.3",
+    "@babel/polyfill": "^7.8.7",
+    "@babel/preset-env": "^7.9.0",
+    "@babel/register": "^7.9.0",
+    "axios": "^0.20.0",
+    "babel-node": "0.0.1-security",
+    "babel-preset-env": "^1.7.0",
+    "camaro": "^6.0.4",
+    "cookie-parser": "^1.4.5",
+    "debug": "~2.6.9",
+    "dotenv": "^8.2.0",
+    "easy-soap-request": "^3.5.0",
+    "exceljs": "^4.1.1",
+    "express": "^4.16.4",
+    "fast-xml-parser": "^3.17.4",
+    "http-errors": "^1.6.3",
+    "jade": "~1.11.0",
+    "morgan": "^1.9.1",
+    "mysql": "^2.18.1",
+    "request": "^2.88.2",
+    "sqlstring": "^2.3.2",
+    "xml2js": "^0.4.23"
+  }
+}
