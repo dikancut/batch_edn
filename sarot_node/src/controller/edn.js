@@ -47,17 +47,26 @@ const create_query_log = async (table,param) => {
     
 }
 
+function today() {
+    let date_today = new Date().toLocaleDateString("en-CA");
+    let ret = {"date":date_today};
+    return ret;
+} 
+
 const getEdn = async (param = null) =>{
+    // console.log(param);
+    let {date} =  param;
     let date_ob;
-    if(param == null || typeof param == 'undefined'){
+    if(date == null || typeof date == 'undefined' || date == 'undefined'){
         date_ob = new Date();
+        // console.log(date_ob); 
     }else {
-        let {date} =  param;
+        
         var dateParts = date.split("-");
         date_ob = new Date(+dateParts[0], dateParts[1] - 1, +dateParts[2]) 
     }
     // adjust 0 before single digit date
-    let date = ("0" + date_ob.getDate()).slice(-2);
+    let date_str = ("0" + date_ob.getDate()).slice(-2);
 
     // current month
     let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
@@ -65,8 +74,8 @@ const getEdn = async (param = null) =>{
     // current year
     let year = date_ob.getFullYear();
 
-    let tgl = year+"/"+month+"/"+date;
-    let tgl_iso = year+"-"+month+"-"+date;
+    let tgl = year+"/"+month+"/"+date_str;
+    let tgl_iso = year+"-"+month+"-"+date_str;
     
     
     const config = {
@@ -129,11 +138,14 @@ const getEdn = async (param = null) =>{
             return acc;
           }, {})
 
-          
-        let header_70 = res2[70].filter((e, i) => {
-            return res2[70].findIndex((x) => {
-            return x.dn_number == e.dn_number && x.depo_code == e.depo_code;}) == i;
-        });
+
+        let header_70 = res2[70].reduce((arr, item) => {
+            let exists = !!arr.find(x => x.delivery_number === item.delivery_number);
+            if(!exists){
+                arr.push(item);
+            }
+            return arr;
+        }, []);
         
         header_70 = header_70.map(row => ({ 
 
@@ -172,25 +184,7 @@ const getEdn = async (param = null) =>{
             return arr;
         }, []);
 
-        // let header_50 = res2[50].filter((e, i) => {
-        //     return res2[50].findIndex((x) => {
-        //     return x.dn_number == e.dn_number}) == i;
-        // });
-
-        // let header_50 = res2[50].reduce((accumulator, current) => {
-        //     if (checkIfAlreadyExist(current)) {
-        //       return accumulator;
-        //     } else {
-        //       return [...accumulator, current];
-        //     }
-          
-        //     function checkIfAlreadyExist(currentVal) {
-        //       return accumulator.some((item) => {
-        //         return (item.dn_number === currentVal.dn_number &&
-        //                 item.depo_code === currentVal.depo_code);
-        //       });
-        //     }
-        //   }, []);
+ 
 
         header_50 = header_50.map(row => ({ 
 
