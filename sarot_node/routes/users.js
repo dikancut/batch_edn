@@ -15,7 +15,7 @@ router.post('/tes_res', function(req, res, next){
 });
 
 router.post('/get_edn', function(req, res, next){
-  tcontr.getEdn().then((v) => {
+  tcontr.getEdn({date : `${req.body.date}`}).then((v) => {
     res.send(v)
   })
 });

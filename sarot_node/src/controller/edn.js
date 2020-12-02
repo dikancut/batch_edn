@@ -47,9 +47,15 @@ const create_query_log = async (table,param) => {
     
 }
 
-const getEdn = async () =>{
-    let date_ob = new Date();
-
+const getEdn = async (param = null) =>{
+    let date_ob;
+    if(param == null || typeof param == 'undefined'){
+        date_ob = new Date();
+    }else {
+        let {date} =  param;
+        var dateParts = date.split("-");
+        date_ob = new Date(+dateParts[0], dateParts[1] - 1, +dateParts[2]) 
+    }
     // adjust 0 before single digit date
     let date = ("0" + date_ob.getDate()).slice(-2);
 
@@ -61,6 +67,8 @@ const getEdn = async () =>{
 
     let tgl = year+"/"+month+"/"+date;
     let tgl_iso = year+"-"+month+"-"+date;
+    
+    
     const config = {
         
             "Content-Type" : "application/soap+xml; charset=utf-8"          
@@ -156,14 +164,37 @@ const getEdn = async () =>{
             modified_by : 0
         }));
         
-        let header_50 = res2[50].filter((e, i) => {
-            return res2[50].findIndex((x) => {
-            return x.dn_number == e.dn_number && x.depo_code == e.depo_code;}) == i;
-        });
+        let header_50 = res2[50].reduce((arr, item) => {
+            let exists = !!arr.find(x => x.delivery_number === item.delivery_number);
+            if(!exists){
+                arr.push(item);
+            }
+            return arr;
+        }, []);
+
+        // let header_50 = res2[50].filter((e, i) => {
+        //     return res2[50].findIndex((x) => {
+        //     return x.dn_number == e.dn_number}) == i;
+        // });
+
+        // let header_50 = res2[50].reduce((accumulator, current) => {
+        //     if (checkIfAlreadyExist(current)) {
+        //       return accumulator;
+        //     } else {
+        //       return [...accumulator, current];
+        //     }
+          
+        //     function checkIfAlreadyExist(currentVal) {
+        //       return accumulator.some((item) => {
+        //         return (item.dn_number === currentVal.dn_number &&
+        //                 item.depo_code === currentVal.depo_code);
+        //       });
+        //     }
+        //   }, []);
 
         header_50 = header_50.map(row => ({ 
 
-            delivery_number : row.stVBELN,
+            delivery_number : row.delivery_number,
             OTF_date : row.OTF_date,
             depo_code : row.depo_code,
             created_by : 0,
