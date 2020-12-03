@@ -29,8 +29,12 @@ const create_query_log = async (table,param) => {
     console.log("request :"+req);
     let resp = await parse_log(response);
     resp = JSON.stringify(resp);
+    let is_resp_json = isJsonParsable(resp);
     console.log("response :"+resp);
-    const sql = `insert into ${table} (request, OTF_date, http_code,response,created_by,modified_by) values ('${req}','${OTF_date}','${http_code}','${resp}',0,0)`;
+    let sql = '';
+    if(is_resp_json)
+    sql = `insert into ${table} (request, OTF_date, http_code,response,created_by,modified_by) values ('${req}','${OTF_date}','${http_code}','${resp}',0,0)`;
+    else sql = `insert into ${table} (request, OTF_date, http_code,response,created_by,modified_by) values ('${req}','${OTF_date}','${http_code}','${response}',0,0)`;
     // const data = [[request,OTF_date,http_code,response,0,0]];
     const r = await insertQuery(sql)
     // con.end_connection()
@@ -45,6 +49,15 @@ const create_query_log = async (table,param) => {
     //   con.end()
     // console.log(results);
     
+}
+
+const isJsonParsable = (string) => {
+    try {
+        JSON.parse(string);
+    } catch (e) {
+        return false;
+    }
+    return true;
 }
 
 function today() {
